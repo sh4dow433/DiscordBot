@@ -5,12 +5,6 @@ const { createAudioPlayer, createAudioResource, joinVoiceChannel, AudioPlayerSta
 const ytdl = require('@distube/ytdl-core');
 const yts = require('yt-search');
 
-// Add YouTube authentication
-// play.setToken({
-//     youtube: {
-//         cookie: ''
-//    }
-// });
 
 const client = new Client({
     intents: [
@@ -25,6 +19,8 @@ const client = new Client({
 
 const prefix = '!';
 const queue = new Map();
+
+const cookies = process.env.YT_COOKIE; // Replace with your actual cookies
 
 client.once('ready', () => {
     console.log('Bot is ready!');
@@ -132,7 +128,7 @@ async function execute(message, args) {
             url = searchResults.videos[0].url;
         }
 
-        songInfo = await ytdl.getInfo(url);
+        songInfo = await ytdl.getInfo(url, { requestOptions: { headers: { Cookie: cookies } } });
         const song = {
             title: songInfo.videoDetails.title,
             url: songInfo.videoDetails.video_url
